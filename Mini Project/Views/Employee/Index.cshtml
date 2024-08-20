@@ -1,0 +1,56 @@
+﻿@model List<Mini_Project.Models.Employee>
+
+@foreach (var employee in Model)
+{
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-dark py-2">@employee.Name's Tasks</h2>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Task Name</th>
+                        <th style="width: 35%;">Description</th>
+                        <th style="width: 20%;">Due Date</th>
+                        <th style="width: 20%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var task in employee.Tasks.OrderBy(t => t.DueDate))
+                    {
+                        <tr>
+                            <td style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@task.Name</td>
+                            <td style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@task.Description</td>
+                            <td style="white-space: nowrap;">@task.DueDate.ToString("d")</td>
+                            <td class="text-end" style="white-space: nowrap;">
+                                @if (task.Status == Mini_Project.Models.Status.New)
+                                {
+                                    <a asp-controller="Employee" asp-action="Details" asp-route-employeeId="@employee.EmployeeId" asp-route-taskId="@task.TaskId" asp-route-taskstatus="@task.Status" class="btn btn-primary text-nowrap">
+                                        <i class="bi bi-play"></i> Start Task
+                                    </a>
+                                }
+                                else if (task.Status == Mini_Project.Models.Status.InProgress)
+                                {
+                                    <a asp-controller="Employee" asp-action="Details" asp-route-employeeId="@employee.EmployeeId" asp-route-taskId="@task.TaskId" asp-route-taskstatus="@task.Status" class="btn btn-primary text-nowrap">
+                                        <i class="bi-arrow-repeat"></i> Continue Task
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Employee" asp-action="Details" asp-route-employeeId="@employee.EmployeeId" asp-route-taskId="@task.TaskId" asp-route-taskstatus="@task.Status" class="btn btn-primary text-nowrap">
+                                        <i class="bi bi-check"></i> Task Completed
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

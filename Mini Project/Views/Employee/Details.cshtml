@@ -1,0 +1,66 @@
+﻿@model Employee
+
+@{
+    ViewBag.Title = "Task Details";
+    var task = ViewBag.Task as Mini_Project.Models.TaskInfo;
+}
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="text-dark py-2">Task: @task.Name</h2>
+            @if (task.Status == Mini_Project.Models.Status.InProgress)
+            {
+                <form asp-action="UpdateStatus" method="post">
+                    <input type="hidden" name="taskId" value="@task.TaskId" />
+                    <input type="hidden" name="taskStatus" value="@Mini_Project.Models.Status.Completed" />
+                    <button type="submit" class="btn btn-primary">Mark as Completed</button>
+                </form>
+            }
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <p class="mb-2">Description: @task.Description</p>
+        <p>Due Date: @task.DueDate.ToShortDateString()</p>
+        <p>Status: <strong>@task.Status</strong></p>
+
+        <h4>Comments:</h4>
+        <div>
+            @if (task.Comments.Any())
+            {
+                foreach (var comment in task.Comments.OrderBy(c => c.Timestamp))
+                {
+                    <div class="border p-3 my-3 bg-light">
+                        <p class="mb-1">
+                            <span style="font-size: 1.1em; color: #333;">@comment.Content</span>
+                        </p>
+                        <p class="text-muted" style="font-size: 0.9em;">
+                            <strong>Made on: @comment.Timestamp.ToShortDateString() at @comment.Timestamp.ToShortTimeString()</strong>
+                        </p>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No comments yet.</p>
+            }
+        </div>
+
+        <div class="container d-flex justify-content-center my-3">
+            <form asp-action="AddComment" method="post" class="w-50">
+                <div class="form-group mb-3">
+                    <textarea name="commentText" class="form-control" placeholder="Add a comment" required></textarea>
+                </div>
+                <input type="hidden" name="employeeId" value="@Model.EmployeeId" />
+                <input type="hidden" name="taskId" value="@ViewBag.Task.TaskId" />
+
+                <div class="d-flex">
+                    <button type="submit" class="btn btn-primary flex-fill me-2" style="width: 50%;">Add Comment</button>
+                    <a asp-controller="Employee" asp-action="Index" class="btn btn-outline-primary flex-fill" style="width: 50%;">
+                        Go Back
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
